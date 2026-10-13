@@ -1,6 +1,8 @@
 <?php 
  
-use Illuminate\Support\Facades\Route; 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\MahasiswaController;
  
 Route::get('/', function () { 
     return view('welcome'); 
@@ -56,9 +58,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('pengaturan');  // URL: /admin/pengaturan, nama: admin.pengaturan 
 }); 
 
-Route::redirect('/beranda', '/'); 
+Route::redirect('/beranda', '/');
 
-// Dieksekusi bila tidak ada route yang cocok (letakkan paling bawah) 
-Route::fallback(function () { 
-    return response('Halaman tidak ditemukan (kustom).', 404); 
+Route::resource('produk', ProdukController::class); // 7 route CRUD sekaligus
+
+ Route::get('/profil', [
+    MahasiswaController::class, 'profil'
+])->name('mahasiswa.profil');
+
+Route::get('/mahasiswa', [
+    MahasiswaController::class, 'daftar'
+])->name('mahasiswa.daftar');
+
+Route::get('/mahasiswa/{nim}', [
+    MahasiswaController::class, 'detail'
+])->name('mahasiswa.detail'); 
+
+// Dieksekusi bila tidak ada route yang cocok (letakkan paling bawah)
+Route::fallback(function () {
+    return response('Halaman tidak ditemukan (kustom).', 404);
 });
